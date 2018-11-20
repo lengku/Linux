@@ -1,0 +1,7 @@
+#名词说明
+```markdown
+恢复点目标(recovery point objective,RPO)
+恢复时间目标（recovery time objective,RTO）
+服务协议(service level agreement，SLA)
+```
+##
