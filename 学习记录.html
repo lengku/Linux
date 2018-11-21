@@ -3,5 +3,64 @@
 恢复点目标(recovery point objective,RPO)
 恢复时间目标（recovery time objective,RTO）
 服务协议(service level agreement，SLA)
+SDU(session data unit,SDU会话数据单元)：
+  Oracle Net将数据缓存到会话数据单元(session data unit),在Oracle Database 11g，其中大小是8192字节。
+  这些单元充满、转存储或由客户端读取时，便发送到网络层；data guard发送重做块比8192大，所以需要数据库分片，
+  需要将多个片段发给oracle net服务。
+
+
+问题1：如何确定套接字缓冲区的适当大小呢？
+  答：带宽延迟积(bandwidth-delay product，BDP)小于延迟x可用带宽，基本上套接字缓冲区必须要容纳TCP数据的全部BDP.
+      BDP=带宽x延迟*3
+      Tcp 缓冲区大小
+        net.core.rmem_max  最大读和读tcp 缓冲区
+        net.core.wmem_max  最大写和读tcp 缓冲区
+      TCP发送和接受缓冲区之，套接字大小：
+        net.ipv4.tcp_rmem=4096 87380 174760
+        net.ipv4.tcp_wmem=4096 16384 131072
+      案例：
+        可用带宽155Mbs/s，测试得到延迟8ms，计算：BDP=155Mb/s * 8ms * 3 = 465000字节
+        计算方法：
+          带宽：155Mb/s=155000000b/s(155X1000000)
+          延迟时间:8ms=0.008s
+          BDP=155000000 * 0.008=3720000b/8=465000 字节
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+BDP:bandwidth-delay product  BDP=带宽x延迟*3
+传送队列：
+  net.core-netdev_max_backlog=300
+  net.core-netdev_max_backlog=
+
+
 ```
-##
+#Data guard
+```markdown
+  nihao 
+```
