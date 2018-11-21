@@ -1,0 +1,104 @@
+```markdown
+1.主机规划
+	节点网络：172.20.0.0/16
+	serveric网络：10.96.0.0/12
+	pod网络：10.244.0.0/16
+2.集群部署管理工具
+  kubeadm
+  kubelet
+  docker
+3.real server
+  10.0.37.185 master
+  10.0.37.184 node1
+  10.0.37.183 node2
+
+4.master
+	#yum list docker-ce --showduplicates|sort -r  查看版本
+	#获取国内镜像https://www.cnblogs.com/RainingNight/p/using-kubeadm-to-create-a-cluster.html
+	#技术大牛博客https://www.cnblogs.com/cocowool/p/kubeadm_install_kubernetes.html
+	yum -y install docker-ce-18.06.1.ce-3.el7 kubelet kubeadm kubectl
+	配置docker代理
+		1.vim /usr/lib/systemd/system/docker.service
+			Enviroment="HTTPS_PROXY=http://www.ik8s.io:10080"
+			Enviroment="NO_PROXY=127.0.0.0/8,10.0.37.0/24"
+		2.修改docker 内核iptables
+			/proc/sys/net/bridge/bridge-nf-call-iptables
+			/proc/sys/net/bridge/bridge-nf-call-ip6tables
+		  systemctl daemon-reload
+      配置kuberlet
+      systemctl start kuberlet
+      sysetmctl enable kuberlet docker
+
+    3.初始化kubeadm
+    	vim /etc/sysconfig/kubelet
+    	KUBELET_EXTRA_ARGS="--fail-swap-on=false"
+
+    4.拉取镜像
+      #!/bin/bash
+      for imageName in kube-apiserver:v1.12.2 kube-controller-manager:v1.12.2 kube-scheduler:v1.12.2 kube-proxy:v1.12.2
+    			   pause:3.1 etcd:3.2.24 coredns:1.2.2
+    	do
+             docker pull reg.qiniu.com/k8s/$imageName
+    	       docker tag reg.qiniu.com/k8s/$imageName k8s.gcr.io/$imageName
+    	done
+    5.初始化
+    	kubeadm init  --pod-network-cidr=10.244.0.0/16 --service-cidr=10.96.0.0/12 --ignore-preflight-errors=Swap
+    	mkdir -p $HOME/.kube
+    	mkdir -p $HOME/.kube
+    	sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+    	sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+    	kubectl get cs   查看组件信息
+    	kubectl get nodes 查看节点信息
+    6.查看flannel
+    	kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+    	kubectl get pods --all-namespaces  查看状态
+    	kubectl get pods -n kube-system
+    	kubectl get ns
+    	kubectl get pods -n kube-system -o wide
+    	kubectl get pods --all-namespaces -o wide
+
+5.node
+		1.yum -y install docker-ce-18.06.1.ce-3.el7 kubelet  kubectl kubeadm
+		2.修改配置
+			vim /usr/lib/systemd/system/docker.service
+			   Enviroment="HTTPS_PROXY=http://www.ik8s.io:10080"
+			   Enviroment="NO_PROXY=127.0.0.0/8,10.0.37.0/24"
+			vim /etc/sysconfig/kubelet
+				 KUBELET_EXTRA_ARGS="--fail-swap-on=false"
+			systemctl enable docker kubelet
+		3.拉取镜像
+			#!/bin/bash
+			for imageName in kube-proxy:v1.12.2 pause:3.1 etcd:3.2.24 coredns:1.2.2
+			do
+				    docker pull reg.qiniu.com/k8s/$imageName
+				    docker tag reg.qiniu.com/k8s/$imageName k8s.gcr.io/$imageName
+				    docker rmi reg.qiniu.com/k8s/$imageName
+			done
+			kubeadm join 10.0.37.185:6443 --token x843av.pewfk5a37jaejk5v --discovery-token-ca-cert-hash sha256:93de7827146b7fa3230cec31aa528e7f9b94df55349e4019ab20ea2555b28e3e --ignore-preflight-errors=Swap
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
