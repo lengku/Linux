@@ -1,0 +1,22 @@
+# 资源：对象
+  workload： Pod,ReplicaSet,Deployment,StatefulSet,DaemonSet,Job,Cronjob
+  服务发现及均衡：service，Ingress
+  配置与存储：volume,CSI
+    ♦ ConfigMap,Scret
+    ♦ DownwardAPI
+  集群级别资源
+    ♦ Namespace,Node,Role,ClusterRole
+  元数据
+    HPA,PODTemplate，limitrange
+##资源方法
+  apiserver仅接受json格式资源：
+    apiserver:
+    kind：资源类别
+    metadata:元数据
+      name:唯一
+      namespace:
+      labels:标签
+      annotations:资源注解
+      ownerreference
+    spec:期望状态
+    status：当前状态
