@@ -1,4 +1,15 @@
 ```markdown
+master
+	apiserver:提供资源唯一操作入口，其他组件必须通过它提供的API来操作资源
+	etcd：
+	kubelet
+	scheduler
+	controller manager：集群内部管理控制中心，主要目的实现kubernetes集群故障检测和恢复自动化工作
+
+node
+	kubelet：管理pod和上面容器镜像volume
+	kube_proxy：负载均衡
+
 1.主机规划
 	节点网络：172.20.0.0/16
 	serveric网络：10.96.0.0/12

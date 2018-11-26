@@ -1,5 +1,18 @@
 # 资源：对象
-  workload： Pod,ReplicaSet,Deployment,StatefulSet,DaemonSet,Job,Cronjob
+  controller manger是一个控制器集合，包含：replication controller、node controller、resourcequto controller、namespace controller、serviceacceout controller、token controller、service controller
+    以及endpoint controller多个控制器
+    Pod：基本调度单元，一个POD包含一个或多个容器，可以保证同一个POD内的容器运行在同一个宿主机，并且共享资源
+
+    Replication Controller:用于管理控制pod副本数，用于解决Pod扩容问题
+    service：应用服务抽象，定义了Pod逻辑集合和访问这个集合的策略，service是一组协同工作的一组POD，类似于多层架构应用中的一层
+            pod的路由代理，用于解决pod之间的服务发现。
+    Label和label selector:
+
+
+
+
+    ReplicaSet
+    Deployment,StatefulSet,DaemonSet,Job,Cronjob
   服务发现及均衡：service，Ingress（）
   配置与存储：volume,CSI
     ♦ ConfigMap,Scret
