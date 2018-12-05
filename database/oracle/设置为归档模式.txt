@@ -1,0 +1,17 @@
+ 					设置为归档模式
+1.查询当前模式
+	[oracle@oracle ~]$ more /tmp/rman.txt 
+	SQL> select log_mode from v$database;
+
+	LOG_MODE                                                                        
+	------------                                                                    
+	NOARCHIVELOG                                                                    
+
+	SQL> 
+2.shutdown immediate;
+3.startup mount
+4.alter database archivelog;
+5.alter database open;
+
+
+

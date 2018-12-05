@@ -1,0 +1,72 @@
+						oracle 常用操作
+1.oracle 查看表空间使用情况
+SELECT SUM(bytes) / (1024 * 1024) AS free_space, tablespace_name 
+FROM dba_free_space 
+GROUP BY tablespace_name; 
+SELECT a.tablespace_name, 
+a.bytes total, 
+b.bytes used, 
+c.bytes free, 
+(b.bytes * 100) / a.bytes "% USED ", 
+(c.bytes * 100) / a.bytes "% FREE " 
+FROM sys.sm$ts_avail a, sys.sm$ts_used b, sys.sm$ts_free c 
+WHERE a.tablespace_name = b.tablespace_name 
+AND a.tablespace_name = c.tablespace_name; 
+2.查看表空间物理文件的名称及大小 
+SELECT tablespace_name, 
+file_id, 
+file_name, 
+round(bytes / (1024 * 1024), 0) total_space 
+FROM dba_data_files 
+ORDER BY tablespace_name; 
+
+
+
+3.增加数据文件
+alter tablespace USERS
+add datafile '/data/oracle/oradata/orcl/users02.dbf'
+size 10240M autoextend on next 50M maxsize unlimited;
+
+
+4.创建表空间
+	/*分为四步 */
+	/*第1步：创建临时表空间  */
+	create temporary tablespace yuhang_temp 
+	tempfile 'D:\oracledata\yuhang_temp.dbf' 
+	size 50m  
+	autoextend on  
+	next 50m maxsize 20480m  
+	extent management local;  
+	 
+	/*第2步：创建数据表空间  */
+	create tablespace yuhang_data  
+	logging  
+	datafile 'D:\oracledata\yuhang_data.dbf' 
+	size 50m  
+	autoextend on  
+	next 50m maxsize 20480m  
+	extent management local;  
+ 
+	/*第3步：创建用户并指定表空间  */
+	create user yuhang identified by yuhang  
+	default tablespace yuhang_data  
+	temporary tablespace yuhang_temp;  
+	 
+	/*第4步：给用户授予权限  */
+	grant connect,resource,dba to yuhang;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

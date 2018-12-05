@@ -1,0 +1,83 @@
+(python36env) [wzj@localhost ~]$ django-admin
+
+Type 'django-admin help <subcommand>' for help on a specific subcommand.
+
+Available subcommands:
+
+[django]
+    check
+    compilemessages
+    createcachetable
+    dbshell
+    diffsettings
+    dumpdata
+    flush
+    inspectdb
+    loaddata
+    makemessages
+    makemigrations
+    migrate
+    runserver
+    sendtestemail
+    shell
+    showmigrations
+    sqlflush
+    sqlmigrate
+    sqlsequencereset
+    squashmigrations
+    startapp
+    startproject
+    test
+    testserver
+Note that only Django core commands are listed as settings are not properly configured (error: Requested setting INSTALLED_APPS, but settings are not configured. You must either define the environment variable DJANGO_SETTINGS_MODULE or call settings.configure() before accessing settings.).
+(python36env) [wzj@localhost ~]$ 
+
+1.启动项目
+django-admin startproject opsweb
+2.项目目录
+	(python36env) [wzj@localhost opsweb]$ tree 
+	.
+	├── manage.py  		命令行工具
+	└── opsweb	   
+	├── __init__.py 	python模块
+	├── settings.py  	项目配置文件
+	├── urls.py 		url相关
+	└── wsgi.py 		WSGI兼容性web服务器入口
+
+	1 directory, 5 files
+	(python36env) [wzj@localhost opsweb]$ 
+3.启动服务
+	配置mysql：
+		DATABASES = {
+	     'default': {
+	         'ENGINE': 'django.db.backends.mysql',
+	          'NAME': 'django',
+	          'USER': 'root',
+	          'PASSWORD': '123456',
+	          'HOST': '127.0.0.1',
+	          'PORT': 3306,
+	      }
+	    }
+	编辑__init__.py 
+		import pymysql
+		pymysql.install_as_MySQLdb()
+	启动服务器
+		python manage.py  runserver 
+
+4.创建一个app
+	python manage.py startapp dashboard
+  配置url
+  	from django.conf.urls import include, url
+  	url(r'^dashboard/', include("dashboard.urls")),
+  激活app
+
+5.编写试图
+	
+
+
+
+
+
+
+
+

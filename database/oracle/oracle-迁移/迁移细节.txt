@@ -1,0 +1,6 @@
+导出
+	1.exp 高级特性使用Query选项
+		exp n1/n1 file=query_bak.dmp query=\" where object_type=\'TABLE\'"
+	2.得到对象DDL语句
+		exp n1/n1 rows=n compress=n tables=test file=test.dmp log=exp_test.log buffer=1024000
+		imp n1/n1 rows=n full=y ignore=y show=y file=test.dmp log=imp_test.log buffer=1024000

@@ -3,6 +3,79 @@
     网络命名空间
     同一个pod看到对方容器进程pid
     存储卷
+2.Pod模板
+apiVersion: v1          //需要
+kind: Pod               //需要
+metedata:               //需要
+  name: string          //需要
+  namespace: string     //需要
+  labels:
+  - name: string
+  annotations:
+  - name: string
+spec:                   //需要
+  containers:           //需要
+  - name: string        //需要
+    images: string      //需要
+    imagePullPolicy:[Always|Nerver|IfNotPresent]
+    command: [string]
+    args: [string]
+    workingDir: string
+    volumeMounts:
+    - name: string
+       mountPath: string
+       readOnly: boolean
+    ports:
+    - name: string
+       containerPort: int
+       hostPort: int
+       protocol: string
+    evn:
+    - name: string
+       value: string
+    resources:
+      limits:
+        cpu: string
+        memory: string
+    livenessProbe:
+      exec:
+        command: [string]
+      httpGet:
+        path: string
+        port: int
+        scheme: string
+        httpHeaders:
+        - name: string
+      tcpSocket:
+        port: int
+      initialDeploySeconds: number
+      timeoutSeconds: number
+      periodSeconds: number
+      successThreshold: 0
+      failureThreshold: 0
+    securityConext:
+      privileged: false
+  RestartPolicy: [Always,Nerver|OnFailure]
+  nodeSelector:object
+  imagePullSecrets:
+  - name: string
+  hostNetwork: false
+  volumes:
+  - name: string
+     emptyDir: {}
+     hostPath:
+       path: string
+     secret:
+       secretName: string
+       items:
+       - key: string
+          path: string
+     configMap:
+       name: string
+       items:
+       - keys: string
+          path: string
+
 
 
 
@@ -22,4 +95,10 @@
     初始化容器
     容器探测
       liveness 容器存活状态
+        重启策略：restartPolicy
+            Always,OnFailure,Netver,Default to Always
+        重置默认30s：
       readliness 容器是否提供服务
+4.探针类型
+  livenessProbe(容器存活性探测):
+    kubectl explain pods.spec.containers.livenessProbe.exec

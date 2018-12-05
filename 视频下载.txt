@@ -1,0 +1,83 @@
+			视频下载
+/5号VIP八区/VIP专题教程二区/新版Linux高端企业群集架构师实战视频 
+/5号VIP八区/VIP专题教程二区/Zabbix企业级分布式监控系统最佳实践 For DBA
+/5号VIP八区/专题教程专区/企业级大型监控系统zabbix深入介绍最新版视频教程
+
+/5号VIP八区/专题教程专区/大型网站高并发架构与自动化运维实战全揭秘
+/5号VIP八区/专题教程专区/实战详解IPv6以及IPv6和IPv4共存技术
+
+
+/5号VIP八区/专题教程专区/新版RHCA第二门 RH442 红帽企业系统监控和性能调优 实战视频
+
+
+
+/5号VIP八区/专题教程专区/新版云计算RHCA 红帽RHCVA虚拟化RH318培训视频 基于新平台RHEL7
+/5号VIP八区/专题教程专区/最新版OpenStack云计算专家认证(CL210) 基于新平台RHEL7.0
+
+
+/5号VIP八区/VIP专题教程二区/新版云技术RHCA 红帽CloudForms 混合云管理(CL220)实战培训
+/5号VIP八区/专题教程专区/Linux运维Cluster集群部署实战视频 Linux Unix运维进阶
+/5号VIP八区/专题教程专区/KVM虚拟化原理解析与实战演练
+/5号VIP八区/专题教程专区/KVM虚拟化原理解析与实战演练
+/5号VIP八区/专题教程专区/Linux高级架构课12期年薪30万
+/5号VIP八区/专题教程专区/OpenStack运维实战视频课程(基础+进阶+高级)-老段 修正版
+
+/5号VIP八区/专题教程专区/老段带你学MySql管理维护 Sql、性能调优、高可用与监控（mariaDB DBA）
+
+oracle dave
+	/5号VIP六区/VIP专题教程专区/DAVE老师Oracle DBA高级运维深入解析实战班
+	/5号VIP八区/数据库专区/DAVE老师 GoldenGate容灾企业级运维实战 Oracle OGG 高级培训
+	/5号VIP八区/数据库专区/DAVE老师 Oracle DBA高级运维班 OCP OCM
+	/5号VIP八区/数据库专区/DAVE老师Oracle GoldenGate企业级运维实战攻略第二版 OGG OCP OCM
+	/5号VIP八区/数据库专区/DAVE老师Oracle 高级运维 RAC运维实战攻略班 完整第三版
+	/5号VIP八区/数据库专区/Oracle DBA特殊恢复原理与最佳实践
+	/5号VIP八区/数据库专区/新版Oracle OCM 高级技能认证培训视频 周末班
+	打印 上一主题 下一主题
+落落老师高级Oracle SQL优化班 SQL性能调优全攻略 完整20讲 OCP OCM 价值3200 
+
+
+lengkuqiufeng，如果您要查看本帖隐藏内容请回复
+	小学到高中，是中级DBA标准，本科是高级DBA必会课程。本科是调优，硕士是RAC和DG！
+		老方块Oracle培训小学基础班 完整34课 适合零基础
+			/5号VIP八区/专题教程专区/老方块Oracle 11g培训小学基础班 完整34课 适合零基础 OCA OCP
+		老方块Oracle 11g培训新版小学班 SQL 完整35课 星爷版 OCA OCP
+			/5号VIP八区/专题教程专区/老方块Oracle 11g培训新版小学班 SQL 完整35课 星爷版 OCA OCP
+		老方块Oracle培训初中班
+			/5号VIP八区/专题教程专区/老方块Oracle培训初中班 完整50课
+		老方块Oracle培训高中班
+			/5号VIP八区/专题教程专区/老方块Oracle培训高中班 完整58课
+		老方块Oracle培训本科班 本科最多，94课，上了大半年！本科调优，我认为讲的最好
+			/5号VIP八区/专题教程专区/老方块Oracle培训本科班 Oracle性能优化 完整94课 Will老师 道道老师版
+        老方块Oracle培训最后一战 硕士班
+        	/5号VIP八区/专题教程专区/老方块Oracle最后一战 硕士班 完整65课
+
+    oracle:
+    	/5号VIP八区/数据库专区/Oracle DBA入职实战攻略：运维管理、诊断优化、高可用与最佳实践
+    	/5号VIP八区/数据库专区/Oracle 12c数据库DBA安装、配置与维护最佳实践
+    	/5号VIP八区/数据库专区/Oracle 12C RAC集群原理与管理实战
+    	/5号VIP八区/数据库专区/Oracle DBA特殊恢复原理与最佳实践
+    	/5号VIP八区/数据库专区/Oracle GoldenGate(OGG) 复制技术完美解析全套视频+soft
+    	/5号VIP八区/数据库专区/Oracle RAC安装与实战攻略
+    	/5号VIP八区/数据库专区/Oracle RAC集群最佳实践视频
+
+    	/5号VIP八区/数据库专区/Oracle体系结构与数据库管理最佳实践
+    	/5号VIP八区/数据库专区/Oracle 性能优化最佳实践 进阶资深DBA
+    	/5号VIP八区/数据库专区/Oracle大师级OCM认证之SQL调优技术案例培训视频
+
+mysql:
+		/5号VIP八区/数据库专区/MySQL DBA 高级视频 数据库架构最佳实践
+		/5号VIP八区/数据库专区/MySQL DBA 数据库架构实践与企业集群实战
+		/5号VIP八区/数据库专区/MySQL DBA 数据库管理最佳进阶实战(包含MyCat实战讲解集群整合) Mysql5.7+centos7.2
+		/5号VIP八区/数据库专区/MySQL DBA 进阶 Mycat实战入门到精通视频教程 - MySQL高可用方案 - 项目实施 - 优化
+		/5号VIP八区/数据库专区/MySQL DBA 通过案例学习SQL编程与应用
+		/5号VIP八区/数据库专区/MySQL DBA 高级实践培训视频
+		/5号VIP八区/数据库专区/MySQL DBA 高级视频 数据库架构最佳实践
+		/5号VIP八区/数据库专区/MySQL DBA 高级视频教程 核心原理与最佳实践攻略
+		/5号VIP八区/数据库专区/MySQL DBA 高级视频线上运维实践
+		/5号VIP八区/数据库专区/MySQL DBA必知必会之SQL查询语句全攻略培训视频 第二版
+		/5号VIP八区/数据库专区/MySQL DBA电商数据库设计与架构优化实战
+		/5号VIP八区/数据库专区/MySQL DBA高级视频教程 一线DBA大神亲授
+		/5号VIP八区/数据库专区/MySQL5.7复制功能实战
+		/5号VIP八区/数据库专区/MySQL实战高可用架构培训视频
+		/5号VIP八区/数据库专区/MySQL数据库设计实践
+		/5号VIP八区/数据库专区/MySQL高级视频教程 复制技术与高可用最佳实战攻略

@@ -1,0 +1,13 @@
+mysql学习第一次
+1.
+	slow.log:记录慢查询
+	error.log:记录错误日志
+	general.log:记录数据库所有执行的语句
+
+2.
+	innodb_file_per_table
+	db.opt 数据库配置信息
+	sys_tables :存储innodb引擎的表
+	sys_columns:定义所有列的信息
+	sys_indexes:innodb所有表索引信息
+	sys_filds:索引中定义的索引列

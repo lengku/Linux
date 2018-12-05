@@ -1,0 +1,197 @@
+1.学习方法
+	oerr ora 600
+	oeer rman xxx
+	orz
+
+		orz lastdatafile   最近添加的数据
+		orz event
+		查找salq：
+			orz event
+			orz active   当前活动，过滤jobq slave wait   --eventname
+			orz size
+			orz tablike
+			orz getstat
+
+			orz sqltext sql_id
+			orz plan sql_id
+			orz get_kill_sh sql_id
+
+	相关试图
+		v$archived_log
+		v$backup_corruption
+		v$backup_device
+		v$backup_files
+		v$backup_piece
+		v$backup_predolog
+		v$backup_set
+		v$backup_spfile
+		v$copy_corruption   查看坏块
+		v$rman_configuration
+2.原理
+	Server recover manager
+	backup 
+	restore
+	
+	数据库必须被挂载或打开
+	不能回滚联机重做日志
+	非归档只能做全备
+
+	压缩备份
+	镜像拷贝
+	备份标签
+
+
+
+
+	确定数据库模式：archive log list
+	1.确定存储位置：控制文件或恢复目录
+	2.定义数据库和环境变量
+	3.启动RMAN
+	4.配置永久设置
+
+	重点：
+		1.检查备份坏块
+		2.扫描逻辑或物理损坏
+		3.中断之前允许失败数量限制MAXCORRUPT ---千万不能设置
+		4.备份操作之前验证目标输入文件
+		5.全双工备份集群
+		6.覆盖写现有备份集或镜像拷贝
+		7.存储设备和数据之间数据传送控制提交到介质管理层
+		8.加密备份文件
+
+
+	全备份：
+		backup database plus archivelog; 
+		备份了日志拷贝，数据文件拷贝，控制文件，spfile   --不备份rodo log
+		0 增量备份，相当于一个全库备份，标记为0级别
+		1 增量备份只包0级别增量备份后被修改过的块
+		1 
+
+	启用块改变跟踪
+
+
+
+
+3.实现
+	A.控制文件自动备份
+		configure controlfile autobackup on;
+	B.修改控制文件保存时间
+		select name,value from v$parameter where name='control_file_record_keep_time';
+		alter system set CONTROL_FILE_RECORD_KEEP_TIME=20;
+	C.配置recovery window
+		数据库可以恢复到最近七天的任意时刻，超过7天的数据库备份标记为obsolete.
+		configure retention policy to recovery window of 7 days;
+	D.redundancy
+		策略不会自动删除备份，需要使用delete obsolete删除，report obsolete显示备份集
+		configure retention policy to redundancy 5;
+
+
+
+run {
+	backup as backupset
+	format '/u01/db01/backup/%d_%s%p'
+	duration 10:00 minimize load
+	(database);
+	SQL 'ALTER SYSTEM archive log current';
+}
+3.操作
+
+
+
+4.验证
+
+
+
+
+5.问题
+
+
+6.
+
+
+
+
+
+
+
+内部数据包将RMAN PL/SQL块变成系统调用，调用可以写入数据库服务器磁盘系统
+ramn或recover.bsq
+recover.bsk库文件
+
+
+数据库控制文件：
+	负载数据库物理结构
+	物理文件位置
+	文件包含的头部信息
+	重做日志
+	归档信息
+控制文件重用(内容)
+	select type,record_size from v$controlfile_record_section;
+
+控制文件不会被覆盖:show parameter control_file_record_keep_time;
+alter system set control_file_record_keep_time=20;
+
+
+快照控制文件
+configure snapshot controlfile name to '路径'
+
+RMAN服务器进程
+
+
+ramn 的sys数据包重点中的重点
+	sys.dbms_rcvman访问控制文件的信息并将此信息给RMAN，准确发应数据库结构备份或还原操作
+
+	sys.dbms_rcvman访问控制文件效验必须信息，传回RMAN服务器，rman基于recovery.bsp文件创建PL/sql块，数据库块包含对DBMS_BACKUP_RESTORE数据包调用
+	DBMS_BACKUP_RESTORE数据包创建调用备份控制文件，控制文件或归档redo log
+	v$session_logops查看DBMS_BACKUP_RESTORE书包工作
+
+内核RMAN数据包
+	cataproc.sql默认安装上面两个数据包
+
+
+总结：
+	1.开始备份---》创建快照控制文件--》sys.dbms_revman -->读取控制文件效验
+		sys.dbms_rcvman --get;recover.bsq；sys.dbms_backup_restore
+	2.rman get revover.bsq库文件代码创建一些PL/SQL块，dbms_backup_restore创建系统调用备份数据文件，控制文件或归档文件
+	3.
+
+select sid,serial#,context,sofar,totalwork,round(sofar/totalwork * 100,2) "%_complete"
+from v$session_longops
+where opname like 'RMAN%'
+AND OPNAME NOT LIKE '%aggregate%'
+and totalwork !=0
+AND sofar <>totalwork;
+
+
+
+
+
+
+
+
+
+
+
+
+2018/10/07
+	表：历史表和业务表
+	异地迁移：
+		restore
+		recover
+
+	RMAN兼容性： 1-4
+		1.rman executable
+		2.recovery catalog database
+		3.recovery catalog schema in the recovery catalog database
+		4.target database
+		5.auxiliary database(used fordumplicate)
+
+	CPU 
+	PSU
+
+	跨平台：
+		Active database dumplicate
+		backup-based duplicate using image copies or backup sets
+		restore and recovery using image copies or backup sets
+
+	

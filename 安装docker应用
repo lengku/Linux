@@ -1,0 +1,18 @@
+1.安装docker
+	yum -y install docker docker-compose 
+	yum enable docker
+	docker load < kechuangsys_db.tar 
+	docker load <mongodb.tar
+	docker load <rabbitmq.tar
+2.消息队列
+	rabbitmqctl add_vhost kechuang 
+	rabbitmqctl add_user kechuang kechuang_Tontron2017  
+	rabbitmqctl set_user_tags kechuang management  
+	rabbitmqctl set_permissions -p kechuang kechuang ".*" ".*" ".*" 
+
+
+
+15972   --->15672
+15981   --->81
+15985   --->3375
+

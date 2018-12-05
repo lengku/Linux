@@ -1,0 +1,45 @@
+理论信息
+1.两种方法：
+	物理负责：undo文件恢复（数据块的恢复）
+	逻辑复制：udno文件同步到备库，然后转换为sql，导入数据库
+
+2.DG相关进程（实例中启动了一些进程，RAC是实例之外的）
+	ARCH: archiver 归档
+	LSN:LOG-WRITE network-server   log远程写log
+	RFS:Rmote file server   远程接受数据
+	FAL:fetch archive log  效验归档日志，缺少那个让主库从新发
+	MRP:managed recovery process 
+	LSP:Logical standby process   逻辑数据库
+
+3.DB保护模式
+	最大保护			零数据丢失       			延迟主数据库，直到确认收到副本
+	最大可用			零数据丢失，单失败包含		延迟著数据库，知道收到副本或发生超时然后继续处理
+	最大性能			允许数量少量丢失 				异步（数据库不要求主数据库）
+	实现方法：
+		ARCH:
+			把完整的REDO文件copy道standby数据库服务器上
+		LGWR:两种模式
+			async：异步
+				redo write by lgwr to local disk
+				LGWR将redo写道本地log文件
+				LSN读取redo，传送standby
+			sync：
+				redo written to standby by lgwr -modes are:
+				lgwr将redo信息直接写道standby数据库服务器上
+4.active data guard licensing
+
+	实施查询
+	备份数据库ramn块变化
+	
+
+
+
+
+
+
+
+
+
+
+
+
