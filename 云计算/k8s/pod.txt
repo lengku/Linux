@@ -1,0 +1,25 @@
+1.概念
+  docerk中容器是最小的处理单元，增删改查都是容器
+    网络命名空间
+    同一个pod看到对方容器进程pid
+    存储卷
+
+
+
+2.镜像选择
+  Always:每次都下载最新镜像
+  Nerver：只是用本地镜像
+  IfNotPresen:本地没有就下载
+3.生命周期
+  状态：
+    Pending
+    Running
+    Failed
+    Succeeded
+    unknown
+  kubelet和API通信
+  创建Pod:
+    初始化容器
+    容器探测
+      liveness 容器存活状态
+      readliness 容器是否提供服务

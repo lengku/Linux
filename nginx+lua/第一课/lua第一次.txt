@@ -1,0 +1,9 @@
+基本数据类型：
+    nil：无效值
+    boolean：false和true
+    number：双精度类型的浮点数
+    string：一对双引号或单引号
+    function:
+    userdata:任意存储变量C数据结构
+    thread：执行独立线程
+    table：表是一个关联数组

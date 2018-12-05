@@ -22,16 +22,35 @@
   元数据
     HPA,PODTemplate，limitrange
 ##资源方法
-  apiserver仅接受json格式资源：
+  apiserver仅接受json格式资源；yaml提供配置清单
     apiserver:
     kind：资源类别
     metadata:元数据
       name:唯一
       namespace:
       labels:标签
-      annotations:资源注解
+      annotations:
+          资源注解，资源引用：/api/GROUP/VERSION/default
+          与label不同再于，不能挑选对象，仅用于为对象提供元数据
       ownerreference
+
     spec:期望状态
+
+
     status：当前状态
-#镜像方式
-  manifest.json
+
+资源配置清单
+  自主式pod资源
+      spec.containers <[]object>
+       - name <string>
+         image <string>
+         imagePullPolicy  <string>
+           Always(latest)，Nerver,IfNotPresent
+         ports
+         - name: http
+           containerPort: 80
+
+
+
+
+args和command区别

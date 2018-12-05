@@ -88,6 +88,18 @@ node
 			done
 			kubeadm join 10.0.37.185:6443 --token x843av.pewfk5a37jaejk5v --discovery-token-ca-cert-hash sha256:93de7827146b7fa3230cec31aa528e7f9b94df55349e4019ab20ea2555b28e3e --ignore-preflight-errors=Swap
 
+6.service 共享
+	kubectl run nginx-deploy --image=nginx --port=80 --replicas=1
+	kubectl expose deployment nginx-deploy --name=nginx --port=80 --target-port=80 --protocol=TCP
+
+	kubectl run myapp --image=ikubernetes/myapp:v1 --replicas=2
+	动态扩容：
+	kubectl scale --replicas=3 deployment myapp
+	在线升级：
+	kubectl set image deployment myapp myapp=ikubernetes/myapp:v2
+	查看升级进度
+	kubectl rollout status deployment myapp
+
 
 
 
