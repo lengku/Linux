@@ -1,0 +1,7 @@
+#!/bin/bash
+LOGS_PATH=/usr/local/nginx/logs/history
+CUR_LOGS_PATH=/usr/local/nginx/logs
+YESTERDAY=$(date -d "yesterday" +%Y-%m-%d)
+mv ${CUR_LOGS_PATH}/access.log ${LOGS_PATH}/access_${YESTERDAY}_log
+mv ${CUR_LOGS_PATH}/error.log ${LOGS_PATH}/access_${YESTERDAY}_errorlog
+kill -USR1 $(cat /usr/local/nginx/logs/nginx.pid)
