@@ -1,3 +1,8 @@
+nginx 日志备份
+mv access.log bak.log
+nginx -s reopen
+
+
 #!/bin/bash
 LOGS_PATH=/usr/local/nginx/logs/history
 CUR_LOGS_PATH=/usr/local/nginx/logs
