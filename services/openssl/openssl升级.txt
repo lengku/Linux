@@ -1,0 +1,15 @@
+cd openssl-版本号
+./config shared zlib
+make
+make install
+
+###不需要
+mv /usr/bin/openssl /usr/bin/openssl.bak
+mv /usr/include/openssl /usr/include/openssl.bak
+ln -s /usr/local/ssl/bin/openssl /usr/bin/openssl
+ln -s /usr/local/ssl/include/openssl /usr/include/openssl
+###不需要
+
+ln -s /usr/local/lib64/libssl.so.1.1 /usr/lib64/libssl.so.1.1
+ln -s /usr/local/lib64/libcrypto.so.1.1 /usr/lib64/libcrypto.so.1.1
+echo “/usr/local/ssl/lib” >> /etc/ld.so.conf
