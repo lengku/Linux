@@ -1,0 +1,27 @@
+
+                        版本控制
+                        集成工具
+交付               +    部署工具     =   持续交付
+
+
+
+
+
+
+gitlab
+  github 一个开源分布式版本控制系统，ruby语言
+  在线托管仓库
+
+1.nginx 静态web服务器
+  gitlab-workhorse轻量级反向代理服务器
+  gitlab-shell用于处理git命令和修改authorized key
+  logrotate  日志
+  postgresql数据库
+  redis缓存数据库
+
+2.安装
+  yum -y install curl policycoreutils openssh-server openssh-clients postfix
+  curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh |sudo bash
+3.systemctl start postfix
+4.yum -y install gitlab-ce
+5.

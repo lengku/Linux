@@ -1,0 +1,16 @@
+#清除历史遗留文件
+rpm -qa |grep openssh|xargs -i rpm -e --nodeps {}
+rm -rf /etc/init.d/sshd
+rm -rf /usr/local/bin/ssh  /usr/local/bin/ssh-keygen  /usr/local/bin/sshd  /usr/local/sbin/sshd /usr/sbin/sshd /usr/bin/ssh /usr/bin/ssh-keygen /etc/rc.d/sshd
+
+#编译安装
+cd openssl-版本
+./configure --sysconfdir=/etc/ssh --with-md5-passwords  --with-pam  --with-zlib
+make
+make install
+
+cp contrib/redhat/sshd.init /etc/init.d/sshd
+ln -s /usr/local/bin/ssh /usr/bin/ssh
+ln -s  /usr/local/bin/ssh-keygen  /usr/bin/ssh-keygen
+ln -s /usr/local/bin/sshd /etc/rc.d/sshd
+cp /usr/local/sbin/sshd /usr/sbin/sshd
