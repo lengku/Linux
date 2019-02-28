@@ -1,0 +1,7 @@
+1.max_connect_errors
+    默认连接10，如果连续10次错误就会自动拥堵，需要flush hosts来解除。
+  connect_timeout
+    等待应答一个报文的最大秒数，默认5，建议设置为10-15，避免出现bad hand shake
+   max_connection
+    最大连接数
+    

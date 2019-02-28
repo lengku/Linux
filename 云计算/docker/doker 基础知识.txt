@@ -1,0 +1,141 @@
+IaaS   Infrastructure-as-a-Service 基础设施服务
+      通过虚拟化和分布式存储等技术，实现对服务器，存储设备，网络各种网络资源抽象
+Paas   Platform-as-a-Service  平台服务
+      提供应用
+SaaS   Software-as-a-Service  软件服务dp
+
+
+
+
+
+主机虚拟机化：
+  Type-1
+  type-2:
+
+  资源隔 离
+  jail：沙盒
+
+名称空间：namespaces   clone(),setns(设置名称空间)
+用户空间：LINUX namespaces
+  namespaces                系统调用函数            隔离内容
+  IPC                       CLONE_NEWIPC           信号量/消息队列和共享内存
+  UTC                       CLONE_NEWIPC           主机名和域名
+  mount                     CLONE_NEWNS            挂载点
+  PID                       CLONE_NEWPID           进程编号
+  user                      CLONE_NEWUSER          用户和用户组（kernel 3.8之后支持）
+  Network                   CLONE_NEWNET           网络设备，网络栈，端口
+
+
+Control Groups (cgroups)
+  cgroups:
+    blkio:块设备
+    cpu:cpu
+    cpuacct:多处理器平台上面的CPU集合
+    devices:设备访问
+    freezer:挂起或恢复任务
+    memory:内存用量季报告
+    per_event:对cgroup中的任务进行统一性能测试
+    net_cls：cgroup中订单任务创建的数据报文的类别标识符
+LXC :linux Containers
+
+
+
+OCI
+  Open Container Initiative
+    由linux基金会主导于2015年6月
+    围绕容器格式和运行时刻定制一个开放的工业标准
+  contains two specifications:
+    the Runtime specifications   运行标准
+    the images specifications    镜像标准
+docker architecture
+  the docker daemon
+  the docker client
+  docker registries
+    镜像静态，容器是动态
+docker-ce:
+    配置文件：/etc/docker/daemon.json
+docker 常用操作
+  docker search ：查询
+  docker pull     下载镜像
+  docker image
+
+docker 命令:
+  docker version    查看版本
+  docker info       查看更加详细的信息
+
+
+storage:
+  overlay2
+  xfs
+
+
+
+
+
+
+docker 安装：
+  sed -i 's@SELINUX=enforcing@SELINUX=disabled' /etc/selinux/config
+  配置阿里云加速器
+  sudo mkdir -p /etc/docker
+  sudo tee /etc/docker/daemon.json <<-'EOF'
+  {
+    "registry-mirrors": ["https://gyxb83z9.mirror.aliyuncs.com"]
+  }
+  EOF
+  sudo systemctl daemon-reload
+  sudo systemctl restart docker
+docker 使用   busybox
+  docker image pull nginx:1.14-alpine
+  docker event:
+
+docker images:
+  bootfs:用于系统引导文件系统，包括bootloader和kernel，容器启动完成后会被卸载，用于节约内存资源
+  rootfs:位于bootfs之上，表现为docker容器的根文件系统
+    传统模式，系统启动时，内核挂载rootfs，会首先将其挂载为“只读”模式，完整性自检完成后，将其重新挂载为读写模式
+    docker中，rootfs由内核读写为”只读模式”，随后通过”联合挂载”技术额外挂载一个“可写”层；
+
+docker image layer
+  位于下层的镜像成为父镜像，最底层的称为基础镜像
+  最上层为”可读写”,下面的成为“只读”层
+
+
+
+Aufs:
+    advanced multi-layered unification filesystem  高级文件系统
+    docker最初使用aufs作为容器文件系统层
+
+    overlayfs：从3.18版，合并到Linux 内核
+    docker还支持：btrfs,devicemapper和vfs等
+
+
+registry:
+  特定的docker镜像所有迭代版本组成的镜像仓库
+  一个registry中可以存在多个Repository
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+nmp:
+machine+swarm+compose
+mesos+marathon
+kubernetes: k8s
+
+libcontainer  -->runC
+
+Moby,CNCF

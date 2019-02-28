@@ -8,7 +8,7 @@
 	LSN:LOG-WRITE network-server   log远程写log
 	RFS:Rmote file server   远程接受数据
 	FAL:fetch archive log  效验归档日志，缺少那个让主库从新发
-	MRP:managed recovery process 
+	MRP:managed recovery process
 	LSP:Logical standby process   逻辑数据库
 
 3.DB保护模式
@@ -30,7 +30,84 @@
 
 	实施查询
 	备份数据库ramn块变化
-	
+
+初始化：
+                          master                       slave
+db_name                   orcl 												orcl
+instance_name             orcl                        orcl_stby
+DB_UNIQUE_NAME            orcl                        orcl_stby
+tnsnames.ora              tnsorcl                     tnsorcl_stby
+服务名                     orcl                        orcl
+
+
+
+
+
+
+5.更为归档日志
+	master：
+		1.启用force logging功能
+		  select force_logging from v$database;    开启：alter database force logging;
+    2.设置归档模式
+			SELECT log_mode FROM v$database;   开启：
+						SHUTDOWN IMMEDIATE;
+						STARTUP MOUNT;
+						ALTER DATABASE ARCHIVELOG;
+						ALTER DATABASE OPEN;
+						ALTER DATABASE FORCE LOGGING;
+      文件格式：alter system set log_archive_format='%t_%s_%r.arc' scope=spfile;
+			存放格式：
+
+    3.设置监听：
+			主库：
+			LISTENER1 =
+					(DESCRIPTION_LIST =
+					(DESCRIPTION =
+						(ADDRESS = (PROTOCOL = TCP)(HOST = oracle1)(PORT = 1522))
+					)
+					)
+					SID_LIST_LISTENTER1 =
+					(SID_LIST =
+					(SID_DESC =
+						(GLOBAL_DBNAME = orcl)
+						(SID_NAME = orcl)
+						(ORACLE_HOME = /u01/app/oracle/product/11.2.0)
+					)
+					)
+			备库：
+
+   4.设置db_name
+	    db_name可以一样，但是db_unique_name不能一样
+			   show parameter db_unique_name
+         alter system set db_unique_name='orcl' scope=spfile;   重启数据库
+				 ALTER SYSTEM SET LOG_ARCHIVE_CONFIG='DG_CONFIG=(orcl,orcl_stby)' scope=both;
+				 alter system set log_archive_dest_1='LOCATION=/u01/app/arch VALID_FOR=(ALL_LOGFILES,ALL_ROLES) DB_UNIQUE_NAME=orcl' scope=both;
+				 alter system set log_archive_dest_2='SERVICE=tnssbdb LGWR SYNC AFFIRM VALID_FOR=(ONLINE_LOGFILES,PRIMARY_ROLE) DB_UNIQUE_NAME=orcl_stby' scope=both;
+      配置tns
+								stnssbdb =
+					(DESCRIPTION =
+					 (ADDRESS = (PROTOCOL = TCP)(HOST = oracle2)(PORT = 1521))
+					 (CONNECT_DATA =
+						 (SERVER = DEDICATED)
+						 (SERVICE_NAME = orcl)
+					 )
+					)
+      #注释
+			db_file_name_convert  数据库文件
+						alter system set db_file_name_convert='/u01/app/oracle/oradata/sbdb',/u01/app/oracle/oradata/prod' scope=spfile;
+
+		  log_file_name_convert  重做日志文件
+			      show parameter log
+			      alter system set log_file_name_convert='/u01/app/oracle/oradata/sbdb','/u01/app/oracle/oradata/prod' scope=spfile;
+			#注释
+			STANDBY_FILE_MANAGEMENT
+						show paramter  standby
+						alter system set STANDBY_FILE_MANAGEMENT=auto;
+
+			FAL
+					  show parameter fal
+						alter system set fal_client='tnsorcl' scope=both;
+						alter system set fal_server='tnsorcl_stby' scope=both;
 
 
 
@@ -43,3 +120,66 @@
 
 
 
+
+
+
+
+		  ALTER SYSTEM SET LOG_ARCHIVE_CONFIG='DG_CONFIG=(orcl,orcl_stby)';
+
+		ALTER SYSTEM SET LOG_ARCHIVE_DEST_2='SERVICE=orcl_stby NOAFFIRM ASYNC VALID_FOR=(ONLINE_LOGFILES,PRIMARY_ROLE) DB_UNIQUE_NAME=orcl_stby';
+		ALTER SYSTEM SET LOG_ARCHIVE_DEST_STATE_2=ENABLE;
+
+
+		ALTER SYSTEM SET LOG_ARCHIVE_FORMAT='%t_%s_%r.arc' SCOPE=SPFILE;
+		ALTER SYSTEM SET LOG_ARCHIVE_MAX_PROCESSES=30;
+		ALTER SYSTEM SET REMOTE_LOGIN_PASSWORDFILE=EXCLUSIVE SCOPE=SPFILE;
+
+		ALTER SYSTEM SET FAL_SERVER=orcl_stby;
+		ALTER SYSTEM SET STANDBY_FILE_MANAGEMENT=AUTO;
+
+
+		select * from v$logfile order by 1;
+	slave:
+		1.拷贝密码文件 主库和备库sys密码必须一直
+			scp -P5819 $ORACLE_HOME/dbs/orapworcl oracle@oracle2:$ORACLE_HOME/dbs/
+		2.创建spfile
+    mkdir /u01/app/oracle/admin/orcl_stby/adump -p
+		cd $ORACLE_HOME/dbs
+		touch initorcl_stby.ora
+rcl.__db_cache_size=92274688
+orcl.__java_pool_size=4194304
+orcl.__large_pool_size=4194304
+orcl.__oracle_base='/u01/app/oracle'#ORACLE_BASE set from environment
+orcl.__pga_aggregate_target=461373440
+orcl.__sga_target=310378496
+orcl.__shared_io_pool_size=0
+orcl.__shared_pool_size=192937984
+orcl.__streams_pool_size=4194304
+*.audit_file_dest='/u01/app/oracle/admin/orcl_stby/adump'
+*.audit_trail='db'
+*.compatible='11.2.0.0.0'
+*.control_files='/u01/app/oracle/oradata/orcl_stby/control01.ctl','/u01/app/oracle/flash_recovery_area/orcl_stby/control02.ctl'
+*.db_block_size=8192
+*.db_domain=''
+*.db_name='orcl_stby'
+*.db_recovery_file_dest='/u01/app/oracle/flash_recovery_area'
+*.db_recovery_file_dest_size=4070572032
+*.diagnostic_dest='/u01/app/oracle'
+*.dispatchers='(PROTOCOL=TCP) (SERVICE=orclXDB)'
+*.fal_client='tnsorcl_stby'
+*.fal_server='tnsorclb'
+*.log_archive_config='DG_CONFIG=(orcl,orcl_stby)'
+*.log_archive_dest_1='LOCATION=/u01/app/arch VALID_FOR=(ALL_LOGFILES,ALL_ROLES) DB_UNIQUE_NAME=orcl_stby'
+*.log_archive_dest_2='SERVICE=tnsorcl LGWR SYNC AFFIRM VALID_FOR=(ONLINE_LOGFILES,PRIMARY_ROLE) DB_UNIQUE_NAME=orcl'
+*.log_archive_dest_state_2='ENABLE'
+*.log_archive_format='%t_%s_%r.arc'
+*.log_archive_max_processes=30
+*.memory_target=769654784
+*.open_cursors=300
+*.processes=150
+*.remote_login_passwordfile='EXCLUSIVE'
+*.standby_file_management='AUTO'
+*.undo_tablespace='UNDOTBS1'
+
+3.
+		 mkdir -p /u01/app/oracle/admin/orcl/adump

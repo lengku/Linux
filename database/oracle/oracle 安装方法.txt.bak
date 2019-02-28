@@ -4,13 +4,10 @@
 1.服务器最小化安装
 yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 yum -y install unzip binutils compat-libcap* compat-libstdc++* compat-libstdc++-* gcc gcc-c++  glibc-devel  ksh  libaio-devel  libgcc* libstdc* libXi-* libXtst-* make-* sysstat-* unixODBC-devel cvuqdisk
-cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime 
+cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 	2.确定内核参数
-
-#add
 cat >>/etc/sysctl.conf<<EOF
 ####add############
-net.ipv4.ip_local_port_range = 9000 6550
 fs.aio-max-nr = 1048576
 fs.file-max = 6815744
 kernel.shmall = 2097152
@@ -69,10 +66,10 @@ export ORACLE_SID=orcl
 export ORACLE_BASE=/u01/app/oracle
 export ORACLE_HOME="\$ORACLE_BASE/product/11.2.0"
 export NLS_LANG=american_america.zhs16gbk
-export PATH="\$ORACLE_HOME/bin“:$PATH
+export PATH="\$ORACLE_HOME/bin":$PATH
 export ORACLE_UNQNAME=\$ORACLE_SID
 export TNS_ADMIN=/u01/app/oracle/product/11.2.0/network/admin
-if [ "$USER" = "oracle" ]; then        
+if [ "$USER" = "oracle" ]; then
     if [ "$SHELL" = "/bin/ksh" ]; then
 ulimit -p 16384
 ulimit -n 65536
@@ -85,8 +82,8 @@ EOF
 
 
 5.
-./runInstaller -silent -noconfig -ignorePrereq -responseFile `pwd`/response/db_install.rsp 
-netca /silent /responseFile `pwd`/response/netca.rsp 
+./runInstaller -silent -noconfig -ignorePrereq -responseFile `pwd`/response/db_install.rsp
+netca /silent /responseFile `pwd`/response/netca.rsp
 dbca -silent -responseFile `pwd`/response/dbca.rsp
 
 
@@ -108,12 +105,12 @@ emctl config agent updateTZ
 /u01/app/oracle/product/11.2.0/sysman/config/emd.properties
 /u01/app/oracle/product/11.2.0/oracle_orcl/sysman/config/emd.properties
 [oracle@oracle config]$ grep "agentTZRegion" /u01/app/oracle/product/11.2.0/sysman/config/emd.properties
-[oracle@oracle config]$ 
+[oracle@oracle config]$
 
 
 
 克隆修复
-perl clone.pl ORACLE_BASE=/u01/app/oracle ORACLE_HOME=/u01/app/oracle/product/11.2.0 
+perl clone.pl ORACLE_BASE=/u01/app/oracle ORACLE_HOME=/u01/app/oracle/product/11.2.0
 
 
 /u01/app/oracle/product/11.2.0/oracle_orcl/sysman/config/emoms.properties   修改oracle监听
@@ -122,6 +119,6 @@ perl clone.pl ORACLE_BASE=/u01/app/oracle ORACLE_HOME=/u01/app/oracle/product/11
 
 6.安装oracle sqlplus输入发
 yum install rlwrap readline readline-devel
-vim /home/oracle/.bash_profile 
+vim /home/oracle/.bash_profile
 alias sqlplus='rlwrap sqlplus'
 alias rman='rlwrap rman'

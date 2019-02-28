@@ -1,0 +1,8 @@
+资源配置清单：
+  一级字段：apiversion(group/version),kind(类别)，netdata(name,namespaces,labels,annotations注释),spec,status
+  pod资源：
+    sepc.containers:kubectl explain pod.spec.containers 查看详细的相关信息
+        必须要的资源：
+          - name <string>
+            image <string>
+            imagePullPolicy <string>    Always, Never, IfNotPresent

@@ -1,0 +1,8 @@
+java 进程非常高
+1.找出java进程高的pid
+  mpstat -P ALL 5     查看cpu是否有问题
+  pidstat 5 1         查找异常的程序
+2.根据pid找到对应的线程
+  ps -mp pid -o THREAD,tid,time  |sort -k 2 -nr|head -n 10  找到线程
+3.查找问题代码
+  jstack -F pid| grep 线程号 -A 30

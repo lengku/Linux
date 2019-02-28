@@ -4,13 +4,13 @@
 1.服务器最小化安装
 yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 yum -y install unzip binutils compat-libcap* compat-libstdc++* compat-libstdc++-* gcc gcc-c++  glibc-devel  ksh  libaio-devel  libgcc* libstdc* libXi-* libXtst-* make-* sysstat-* unixODBC-devel cvuqdisk
-cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+\cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 	2.确定内核参数
 
 #add
 cat >>/etc/sysctl.conf<<EOF
 ####add############
-net.ipv4.ip_local_port_range = 9000 6550
+net.ipv4.ip_local_port_range = 9000 65500
 fs.aio-max-nr = 1048576
 fs.file-max = 6815744
 kernel.shmall = 2097152
@@ -46,8 +46,8 @@ oracle soft nproc 2047
 oracle hard nproc 16384   #进程最大数量
 oracle soft nofile 1024
 oracle hard nofile 65536  #最大文件数
-* soft memlock unlimitd
-* hard memlock unlimitd   #内存不限制
+* soft memlock unlimited
+* hard memlock unlimited   #内存不限制
 ####end#####
 EOF
 3.创建
@@ -87,6 +87,8 @@ EOF
 netca /silent /responseFile `pwd`/response/netca.rsp
 dbca -silent -responseFile `pwd`/response/dbca.rsp
 
+
+dbca -silent -deleteDatabase  -responseFile `pwd`/response/dbca.rsp   删除数据库
 
 
 
