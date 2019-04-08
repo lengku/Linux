@@ -6,3 +6,38 @@
           - name <string>
             image <string>
             imagePullPolicy <string>    Always, Never, IfNotPresent
+
+
+spec:
+  containers
+  nodeSelector
+  nodeName
+  restartPolicy:
+    Always,Nerver, OnFailure
+
+  tontainers:
+    name
+    image
+    imagePullPolicy: Always, Never, IfNotPresent
+
+  Pod控制器：
+    ReplicationController:
+    ReplicaSet:新一代
+      副本数
+      标签选择器
+      pod资源模板
+
+    无状态应用，群体
+    Deployment:建构在ReplicaSet之上，
+    DaemonSet:确保集群中节点只有一个，用于日志收集
+
+
+    持续监控
+    Job:是否需要重建需要pod中的任务正确推出
+    Cronjob:
+
+    StatefulSet:
+      封装控制器，
+
+    TPR: Third Party Resources   1.2+ ,1.7
+    CDR: Custom Defined Resource 1.8+

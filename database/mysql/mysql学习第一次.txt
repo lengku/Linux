@@ -12,5 +12,4 @@ mysql学习第一次
 	sys_indexes:innodb所有表索引信息
 	sys_filds:索引中定义的索引列
 3.mysql升级
-	mysql_update -g  只升级mysql系统库
-	
+	mysql_update -s  只升级mysql系统库

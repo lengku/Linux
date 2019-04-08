@@ -1,0 +1,8 @@
+Getting started with Jenkins
+This chapter is intende for new users unfamiliar with Jenkins or those wihout experience with recent verions of Jenkins.
+这个章节目的为没用接触过jenkins的新用户或不了解最近新版本jenkins的用户。
+
+This chapter will lead you through installing an instance of Jenkins on system for learning purposes and understanding basic Jenkins concepts.
+这个章节非常重要，你通过在操作系统上安装一个jenkins，学习和理解jenkins 基础的思想。
+It will provider simple step-by-step tutorials on how to do a number common tasks.Each section is intended to completed in order,
+with each building on knowledge from the previous section .

@@ -1,0 +1,29 @@
+1.安装pyenv
+yum -y install gcc make patch gdbm-devel openssl-devel sqlite-devel \
+     readline-devel zlib-devel bzip2-devel
+2.创建用户环境
+useradd wzj
+git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bash_profile
+echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bash_profile
+echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.bash_profile
+exec "$SHELL"
+查看pyenv是否安装成功：pyenv
+
+pyenv install list 查看可以安装的版本
+
+virtualenv installing
+git clone https://github.com/pyenv/pyenv-virtualenv.git
+echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bash_profile
+mkdir ~/.config/fish -p
+echo >>~/.config/fish/config.fish<<EOF
+status --is-interactive; and pyenv init - | source
+status --is-interactive; and pyenv virtualenv-init - | source
+EOF
+
+mkdir ~/.pip/pip
+echo >>~/.pip/pip.conf<<EOF
+[global]
+index-url=https://mirrors.aliyum.com/pypi/simple/
+trusted-host=mirrors.aliyun.com
+EOF
