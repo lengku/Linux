@@ -3,17 +3,20 @@ IaaS   Infrastructure-as-a-Service 基础设施服务
 Paas   Platform-as-a-Service  平台服务
       提供应用
 SaaS   Software-as-a-Service  软件服务dp
+内核核心作用：分配资源
 
 
 
 
 
 主机虚拟机化：
-  Type-1
+  Type-1：主机虚拟化
   type-2:
 
   资源隔 离
-  jail：沙盒
+  jail：freebsd 沙盒
+  vserver:chroot环境
+
 
 名称空间：namespaces   clone(),setns(设置名称空间)
 用户空间：LINUX namespaces

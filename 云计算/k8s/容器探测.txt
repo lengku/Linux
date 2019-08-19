@@ -1,0 +1,77 @@
+livenessProbe: 存活与否
+readnessProbe: 就性与否
+lifecycle:pod终止前或创建后
+
+livenessProbe
+  [root@master k8s]# more liveness.pod.yaml
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: liveness-exec-pod
+    namespace: default
+  spec:
+    containers:
+    - name: liveness-exec-pod
+      image: busybox:latest
+      imagePullPolicy: IfNotPresent
+      command: ["/bin/sh","-c","touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 3600"]
+      livenessProbe:
+        exec:
+          command: ["test","-e","/tmp/healthy"]
+        initialDelaySeconds: 2
+        periodSeconds: 3
+
+    [root@master k8s]#
+
+    [root@master k8s]# more liveness-get.pod.yaml
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: liveness-httpget-pod
+      namespace: default
+    spec:
+      containers:
+      - name: liveness-get-pod
+        image: ikubernetes/myapp:v1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 80
+        livenessProbe:
+          httpGet:
+            port: http
+            path: /index.html
+          initialDelaySeconds: 2
+          periodSeconds: 3
+    [root@master k8s]#
+
+readinessProbe
+    [root@master k8s]# more redinessProbe.yaml
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: readiness-httpget-pod
+      namespace: default
+    spec:
+      containers:
+      - name: readiness-get-pod
+        image: ikubernetes/myapp:v1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 80
+        #livenessProbe:
+        #  httpGet:
+        #    port: http
+        #    path: /index.html
+        #  initialDelaySeconds: 2
+        #  periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            port: http
+            path: /index.html
+          initialDelaySeconds: 2
+          periodSeconds: 3
+    [root@master k8s]#
+
+    postStart命令执行结果，不能再container命令中引用

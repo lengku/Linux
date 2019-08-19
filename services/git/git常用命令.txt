@@ -1,0 +1,91 @@
+git config --global user.name "name"       #设置全局用户名
+git config --global user.email mail        #设置全局邮箱
+git config --global --list                 #列出全局设置
+git add index.html                         #添加文件到缓存区
+git commit -m "描述内容"                    #提交文件到工作区
+git status                                 #查看工作区状态
+git push                                   #提交到git服务器
+git log                                    #查看日志
+vim  .gitgnoe                              #定义忽略文件
+git reset --hard        HEAD^              #git 版本回滚
+git relog    获取每次提交id
+git branch 查看当前分支
+git checkout --file   从服务器更新某个文件覆盖本地文件
+
+
+
+
+jenkins 插件
+Credentials Plugin                #签名证书
+Gitlab plugin                     #获取代码
+Git plugin和git client plugin     #用于jenkins拉取代码
+Gitlab  Authentication             gitlab 和jenkins认证
+ssh plugin                        #远程执行ssh部署
+Publish Over SSH                  #用于部署ssh
+
+
+
+
+
+
+#!/bin/bash
+ProjectDir=/smart-expo/smart-expo
+Package() {
+   cd $ProjectDir && git pull
+   [ "$?" -eq "0" ] && mvn clean package -DskipTests || exit 1
+ }
+App() {
+   [ "$?" -eq "0" ] && {
+   cd $ProjectDir
+   /bin/cp  expo-auth/target/*.jar deploy/app/
+   /bin/cp  expo-sign/target/*.jar deploy/app/
+   /bin/cp  expo-questionnaire/target/*.jar deploy/app/
+   /bin/cp  expo-activity/target/*.jar deploy/app/
+   /bin/cp  expo-cms/target/*.jar deploy/app/
+   /bin/cp  expo-cms-web/target/*.jar deploy/app/
+   } || exit 1
+ }
+gateway() {
+   [ "$?" -eq "0" ] && {
+   cd $ProjectDir
+   /bin/cp  expo-gateway/target/*.jar deploy/app/
+   /bin/cp  expo-front-gateway/target/*.jar deploy/app/
+   } || exit 1
+ }
+registry() {
+    [ "$?" -eq "0" ] && {
+    cd $ProjectDir
+    /bin/cp  expo-registry/target/*.jar deploy/app/
+    } || exit 1
+  }
+front() {
+  cd /smart-expo/smart-expo-front
+  git pull
+  yarn
+  npm run build
+  [ "$?" -eq "0" ] && {
+  rm -rf /work/html/static/*
+  cp -rf /smart-expo/smart-expo-front/dist/* /work/html/static/
+  }
+ }
+case "$1" in
+    APP)
+    Package
+    docker-compose -f /smart-expo/smart-expo/deploy/152/docker-compose-152.yaml down
+    front
+    docker-compose -f /smart-expo/smart-expo/deploy/152/docker-compose-152.yaml up -d
+    ;;
+    gateway)
+    Package
+    docker-compose -f /smart-expo/smart-expo/deploy/152/docker-compose-gateway-152.yaml down
+    front
+    docker-compose -f /smart-expo/smart-expo/deploy/152/docker-compose-gateway-152.yaml up -d
+    ;;
+    registry)
+    Package
+    docker-compose -f /smart-expo/smart-expo/deploy/152/docker-compose-registry-152.yaml down
+    front
+    docker-compose -f /smart-expo/smart-expo/deploy/152/docker-compose-registry-152.yaml up -d
+    ;;
+ *)
+    echo $"{Usage: $0 {front|gateway|registry|page}}"

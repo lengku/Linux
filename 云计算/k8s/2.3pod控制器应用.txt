@@ -6,8 +6,6 @@
           - name <string>
             image <string>
             imagePullPolicy <string>    Always, Never, IfNotPresent
-
-
 spec:
   containers
   nodeSelector
@@ -41,3 +39,7 @@ spec:
 
     TPR: Third Party Resources   1.2+ ,1.7
     CDR: Custom Defined Resource 1.8+
+
+
+    Operator:
+Helm:

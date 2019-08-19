@@ -1,0 +1,32 @@
+deployment
+
+  打补丁
+  kubectl patch deployment myapp-deploy -p '{"spec":{"replicas":5}}'
+
+  kubectl pause
+
+  deploy.spec.strategy.rollingUpdate.maxSurge
+  deploy.spec.strategy.rollingUpdate.maxUnavailable
+
+
+
+  更新镜像，并暂停容器
+  kubectl set image deployment myapp-deploy myapp=ikubernetes/myapp:v3 && kubectl rollout pause deployment myapp-deploy
+
+  恢复容器
+  kubectl rollout resume deployment/myapp-deploy
+
+
+  查看容器更新信息
+  kubectl rollout history deployment myapp-deploy
+
+  回滚版本
+  kubectl rollout undo deployment myapp-deploy --to-revision=1
+
+
+
+
+
+Daemonset:
+  查看镜像环境变量 docker images inspect ikubernetes/filebeat:5.6.5-alpine
+  

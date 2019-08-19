@@ -1,0 +1,15 @@
+ElasticSearch+LogStash+Kibana
+  Kibana:可视化
+  ElasticSearch 基于Lucene ,分布式，集群模式：主节点选举产生，所有节点都有
+                shareds
+                replicas
+                recovery
+
+
+
+
+curl -H'Content-Type: application/json' -i -XGET 'http://10.0.38.160:9200/_count?pretty' -d ' {
+  "query": {
+      "match_all": {}
+      }
+  }'

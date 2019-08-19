@@ -1,0 +1,13 @@
+source 根据请求源IP
+static-rr 权重
+lastconn 最少连接
+uri 根据请求rui
+url_param 根据请求的url参数
+rdp-cookie 根据cookie来锁定并哈希每一次请求
+hdr根据http请求头来锁定每一次http请求
+roundrobin轮询
+
+
+
+
+你好

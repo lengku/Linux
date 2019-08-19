@@ -1,4 +1,7 @@
 #清除历史遗留文件
+yum groupinstall -y "Development Tools"
+yum -y install zlib-devel openssl-devel pam-devel
+
 rpm -qa |grep openssh|xargs -i rpm -e --nodeps {}
 rm -rf /etc/init.d/sshd
 rm -rf /usr/local/bin/ssh  /usr/local/bin/ssh-keygen  /usr/local/bin/sshd  /usr/local/sbin/sshd /usr/sbin/sshd /usr/bin/ssh /usr/bin/ssh-keygen /etc/rc.d/sshd

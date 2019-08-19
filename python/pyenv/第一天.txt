@@ -10,20 +10,21 @@ echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nf
 exec "$SHELL"
 查看pyenv是否安装成功：pyenv
 
-pyenv install list 查看可以安装的版本
+pyenv install --list 查看可以安装的版本
 
 virtualenv installing
-git clone https://github.com/pyenv/pyenv-virtualenv.git
-echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bash_profile
-mkdir ~/.config/fish -p
-echo >>~/.config/fish/config.fish<<EOF
+  cd ~/.pyenv/plugins
+  git clone https://github.com/pyenv/pyenv-virtualenv.git
+  echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bash_profile
+  mkdir ~/.config/fish -p
+echo >> ~/.config/fish/config.fish<<EOF
 status --is-interactive; and pyenv init - | source
 status --is-interactive; and pyenv virtualenv-init - | source
 EOF
 
-mkdir ~/.pip/pip
-echo >>~/.pip/pip.conf<<EOF
+mkdir -p ~/.pip/pip
+cat > ~/.pip/pip.conf << EOF
 [global]
-index-url=https://mirrors.aliyum.com/pypi/simple/
 trusted-host=mirrors.aliyun.com
+index-url=https://mirrors.aliyun.com/pypi/simple/
 EOF

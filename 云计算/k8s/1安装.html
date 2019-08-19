@@ -30,6 +30,7 @@ node
 	#yum list docker-ce --showduplicates|sort -r  查看版本
 	#获取国内镜像https://www.cnblogs.com/RainingNight/p/using-kubeadm-to-create-a-cluster.html
 	#技术大牛博客https://www.cnblogs.com/cocowool/p/kubeadm_install_kubernetes.html
+	# yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
 	yum -y install docker-ce-18.06.1.ce-3.el7 kubelet kubeadm kubectl
 	配置docker代理
 		1.vim /usr/lib/systemd/system/docker.service
