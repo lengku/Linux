@@ -1,7 +1,0 @@
-1.错误信息
-[root@k8s-master ~]# kubectl logs nginx-7cdbd8cdc9-ldhzd
-Error from server (Forbidden): Forbidden (user=system:anonymous, verb=get, resource=nodes, subresource=proxy) ( pods/log nginx-7cdbd8cdc9-ldhzd)
-解决办法：
-  kubectl create clusterrolebinding cluster-system-anonymous --clusterrole=cluster-admin --user=system:anonymous
-
-2.
