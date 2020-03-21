@@ -1,0 +1,138 @@
+## master
+apiserver:提供资源唯一操作入口，其他组件必须通过它提供的API来操作资源，提供命令
+scheduler：用于调度
+controller manager：集群内部管理控制中心，主要目的实现kubernetes集群故障检测和恢复自动化工作，启动docker容器
+etcd：
+flannel
+
+## node
+kubelet：管理pod和上面容器镜像
+kube_proxy 管理容器网络
+etcd
+flannel
+
+##概念
+pod
+	最小调度单元
+
+## 安装说明
+### 1.集群规划
+节点网络：10.0.37.0/24
+serveric网络：10.96.0.0/12
+pod网络：10.244.0.0/16
+角色分类：
+	172.16.0.5   node3
+	172.16.0.15 node2
+	172.16.0.7  node1
+	172.16.0.8  master
+### 2.集群部署管理工具
+  kuberadmin kubelet docker
+### 3.安装
+#### 每个节点准备工作
+```Shell
+#配置系统基本信息
+sed -i 's@SELINUX=enforcing@SELINUX=disabled@g' /etc/selinux/config
+systemctl stop firewalld && systemctl disable firewalld
+systemctl stop iptables && systemctl disable iptables
+yum -y remove docker*
+#关闭swap
+sed -i '/centos-swap/s@^@#@g' /etc/fstab
+swapoff  -a
+
+
+#准备内核参数
+cat >>/etc/sysctl.d/docker.conf <<EOF
+net.bridge.bridge-nf-call-ip6tables=1
+net.bridge.bridge-nf-call-iptables=1
+EOF
+sysctl --system
+
+#准备镜像系统仓库安装基础依赖
+yum -y install wget
+wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+sudo yum-config-manager --add-repo https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+#准备kubernets仓库
+cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
+EOF
+
+
+#更新系统
+sudo yum -y update
+sudo yum makecache fast
+sudo yum install -y yum-utils device-mapper-persistent-data lvm2 xfsprogs
+#安装docker和配置docker启用ipvs模块
+sudo yum -y install docker-ce
+cat >>/etc/sysconfig/modules/ipvs.modules<<EOF
+#!/bin/bash
+ipvs_mods_dir="/usr/lib/modules/$(uname -r)/kernel/net/netfilter/ipvs"
+for i in $(ls $ipvs_mods_dir | grep -o "^[^.]*"); do
+    /sbin/modinfo -F filename $i  &> /dev/null
+    if [ $? -eq 0 ]; then
+        /sbin/modprobe $i
+    fi
+done
+EOF
+chmod +x /etc/sysconfig/modules/ipvs.modules
+/etc/sysconfig/modules/ipvs.modules
+lsmod |grep ip_vs
+sed -i '/ExecStart/aExecStartPost=/usr/sbin/iptables -P FORWARD ACCEPT' /usr/lib/systemd/system/docker.service #Docker从1.13版本开始调整了默认的防火墙规则，禁用了iptables filter表中FOWARD链，这样会引起Kubernetes集群中跨Node的Pod无法通信
+systemctl daemon-reload
+systemctl restart docker
+systemctl enable docker
+
+#在所有节点上安装ipset软件包
+yum install ipset -y
+#为了方便查看ipvs规则我们要安装ipvsadm(可选)
+yum install ipvsadm -y
+
+
+#可以选择指定版本（yum list kubelet --showduplicates 获取版本）
+yum install -y kubeadm-1.16.3-0 kubelet-1.16.3-0 kubectl-1.16.3-0
+systemctl enable kubelet && systemctl start kubelet
+
+```
+#### master 安装
+```Shell
+sudo kubeadm init --apiserver-advertise-address 0.0.0.0 --kubernetes-version=1.16.0 --image-repository=registry.aliyuncs.com/google_containers --pod-network-cidr 10.244.0.0/16
+sudo kubeadm init --apiserver-advertise-address 0.0.0.0 --kubernetes-version=1.16.0 --image-repository=registry.aliyuncs.com/google_containers --pod-network-cidr 10.244.0.0/16
+mkdir -p $HOME/.kube
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+kubectl get nodes
+kubectl get pods --all-namespaces  查看状态
+kubectl get pods -n kube-system
+kubectl get ns
+kubectl get pods -n kube-system -o wide
+kubectl get pods --all-namespaces -o wide
+```
+
+5.node
+```Shell
+	kubeadm join 172.16.0.8:6443 --token yy37dz.vmuh16obhsy2inds \
+	--discovery-token-ca-cert-hash sha256:64a81140040bbb554960fc99d268ce5bef9d65d94c1464ca97e9dd97997dfcee
+```
+6.常用操作
+	kubectl run nginx-deploy --image=nginx --port=80 --replicas=1
+	kubectl expose deployment nginx-deploy --name=nginx --port=80 --target-port=80 --protocol=TCP
+	kubectl run myapp --image=ikubernetes/myapp:v1 --replicas=2
+	动态扩容：
+	kubectl scale --replicas=3 deployment myapp
+	在线升级：
+	kubectl set image deployment myapp myapp=ikubernetes/myapp:v2
+	查看升级进度
+	kubectl rollout status deployment myapp
+
+7.查看版本信息
+	kubectl version --short=true
+  kubectl cluster-info   查看集群信息
+```

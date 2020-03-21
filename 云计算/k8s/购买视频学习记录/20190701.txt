@@ -1,4 +1,0 @@
-安装配置dashboard
-  kubectl create -f dashboard-configmap.yaml
-  kubectl create -f dashboard-rbac.yaml
-  kubectl create -f dashboard-secret.yaml
