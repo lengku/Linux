@@ -1,0 +1,9 @@
+parted /dev/sdb mklabel gpt        #硬盘分区类型改为gpt
+parted /dev/sdb mkpart primary 0 2048 #分一个2G的分区
+parted /dev/sdb p                   #打印分区
+parted /dev/sdb mkpart primary 2049 4292  #创建一个新的分区
+parted /dev/sdb p
+
+#新家磁盘快速分区
+echo -e "n\np\n1\n\n+10G\nn\np\n2\n\n+20G\nw" |fdisk /dev/sdb
+partprobe

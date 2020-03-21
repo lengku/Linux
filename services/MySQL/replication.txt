@@ -1,0 +1,7 @@
+科创传输表空间 5.6版本：
+  统一数据库，同一表空间
+  1.目的服务器器：alter TABLE t DISCARD TABLESPACE;   #删除t.ibd表空间
+  2.源服务器：FLUSH TABLES t FOR EXPORT;
+  3.从源服务器上拷贝t.ibd,t.cfg 文件到目标服务器
+  4.源服务器：UNLOCK TABLES;
+  5.目的服务器：ALTER TABLE t IMPORT TABLESPACE;

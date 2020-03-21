@@ -19,9 +19,13 @@ gitlab
   postgresql数据库
   redis缓存数据库
 
-2.安装
+2.安装Omnibus Gitlab-ce package
   yum -y install curl policycoreutils openssh-server openssh-clients postfix
   curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh |sudo bash
-3.systemctl start postfix
-4.yum -y install gitlab-ce
-5.
+#启动postfix并开机启动
+systemctl start postfix && systemctl
+#安装gitlab-ce
+yum -y install gitlab-ce
+#配置openssl
+mkdir -p /etc/gitlab/ssl
+openssl genrsa -out "/etc/gitlab/ssl/gitlab.example.com.key 2048"

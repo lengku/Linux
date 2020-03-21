@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+    stages {
+      stage("编译"){
+         steps{
+            sh "chmod 777 ${env.WORKSPACE}/build.sh &&  ${env.WORKSPACE}/build.sh package"
+          }
+      }
+       stage("质量检查"){
+              steps{
+                  script {
+                      scannerHome = tool 'sonarScanner'
+                      timeout(1)
+                          def qg = waitForQualityGate()
+                          if (qg.status != 'ok') {
+                              error "未通过Sonarqube代码检查，请及时修正"
+                          }
+                 }
+                  withSonarQubeEnv("SonarServer") {
+                      sh "${scannerHome}/bin/sonar-scanner"
+                  }
+
+
+               }
+
+
+
+
+            }
+
+      stage("代码覆盖统计"){
+         steps {
+            jacoco()
+        }
+      }
+        stage("发布"){
+               steps {
+                  sh " ${env.WORKSPACE}/build.sh deploy"
+              }
+            }
+
+
+    }
+}

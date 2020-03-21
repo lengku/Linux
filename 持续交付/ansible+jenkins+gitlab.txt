@@ -1,0 +1,103 @@
+1.gitlab 安装
+#关闭gitlab
+systemctl stop firewalld
+#关闭selinux
+sed -i 's@SELINUX=enforcing@SELINUX=disabled@g' /etc/selinux/config
+#安装Omnibus Gitlab-ce package
+##安装Gitlab组件
+yum -y install curl policycoreutils openssh-server openssh-clients postfix
+##配置yum仓库
+curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh|sudo bash
+systemctl start postfix && systemctl enable postfix
+yum -y install gitlab-ce
+
+#配置证书
+mkdir -p /etc/gitlab/ssl
+opensshl genrsa -out "/etc/gitlab/ssl/gitlab.example.com.key 2048"
+openssl req -neq -key "/etc/gitlab/ssl/gitlab.example.com.csr"
+
+
+openssl x509 -req -days 365 -in "/etc/gitlab/gitlab.example.com.csr" -signkey \
+"/etc/gitlab/ssl/gitlab.example.com.key" -out "/etc/gitlab/ssl/gitlab.example.com.crt"
+
+openssl dhparam -out /etc/gitlab/ssl/dhparams.pem 2048
+chmod 600 /etc/gitlab/ssl/*
+
+#修改gitlab配置文件/etc/gitlab/gitlab.rb
+external_url 'http://gitlab.example.com'   #将http换成https
+ngingx['redirect_http_to_https'] = false  #将注释去掉，将false改为https
+nginx['ssl_certificat_key'] = '/etc/gitlab/ssl/gitlab.example.com.key'
+nginx['ssl_dhparam'] = /etc/gitlab/ssl/dhparams.pem
+
+gitlab-ctl reconfigure
+
+vim /var/opt/gitlab/nginx/conf/gitlab-http.conf
+server_name 下面添加  rewrite ^(.*)$ https://$host$1 permanent;
+gitlab-ctl restart
+
+git -c http.sslVerify=false clone https://gitlab.example.com/root/test-repo.git
+
+
+
+重复构建
+GIT_COMMIT     GIT_PREVIOUS_SUCCESSFUL_COMMIT
+
+if [ $depploy_env == "deploy" ] ; then
+	if [ ${GIT_COMMIT} == ${GIT_PREVIOUS_SUCCESSFUL_COMMIT} ]; THNE
+		echo "你已经部署过该版本${git_version}"
+		exit 1
+	fi
+fi
+
+
+
+
+
+
+####ansible
+
+tenenv 目录详细介绍
+	[testservers]						server组列表
+	test.example.com 				部署服务器主机明
+	[testservers:vars]      server组列表参数
+	server_name=test.example.com
+	user=root
+	output=/root/test.txt
+
+主任务文件main.yml
+- name: Print server name ad user to
+remote testbox
+	shell: "echo 'Currently {{user}} is logging {{server_name}}' >{{ount}}"
+
+
+
+
+常用的模块：
+File模块：
+	在目标主机创建文件或目录，并赋予其系统权限
+-	name: create a file
+	file: 'path=/root/foo.txt state=touch mode=0755 owner=foo group=foo'
+
+Copy模块
+-	name: copy a file
+	copy: 'remote_src=no src=roles/testbox/files/foo.sh dest=/root/foo.sh mode=0644 force=yes'
+
+
+Stat模块：获取远程文件状态信息
+-	name: check if foo.sh exists
+	stat: 'path=/root/foo.sh'
+	register: script_stat
+
+Debug模块：打印Ansible执行输出
+-	debug: msg=foo.sh exists
+	when:	script_stat.stat.exists
+
+Command/Shell模块    shell可以调用系统环境变量
+
+Template模块试下Ansible负端到目标主机的jinjia2模板传送
+- name: write the nginx config file
+	template:	src=roles/testbox/template/nginx.conf.j2 dest=/etc/nginx/nginx.conf
+
+Packaging模块：调用包管理工具
+- name: ensure nginx
+	yum: pkg=nginx state=latest

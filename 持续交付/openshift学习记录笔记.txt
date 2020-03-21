@@ -1,0 +1,13 @@
+openshift 资源规划
+1.基础设施的选择
+	集群性能：通常裸物理机运行再性能上占据优势，主要由于虚拟化层带来的资源损耗
+	运维管理：虚拟化利用IAAS层提供运维便利
+	资源利用率：物理机部署如果只部署openshift运行应用，再业务不饱和的情况下，物理机资源利用率低
+	虚拟化程度：企业是否已经有成熟的IaaS管理系统
+	IaaS与PaaS联动主要表现再Openshift自动扩容集群节点或对节点做纵向扩展
+2.计算资源容量规划
+	通创1个物理服务器的CPU核心相当于2个虚拟机的vCPU,再容量规划中至关重要
+	openshift4.1计算节点最多支持250个参考链接：https://access.redhat.com/documentation/en-us/openshift_container_platform/4.1/html-single/scalability_and_performance/index#cluster-limits_object-limits
+	A.从集群规模出发
+	openshift计算资源总数由单个节点配置和集群最大节点数两方面决定
+	单个计算节点可运行的POD数受计算节点CPU、单个节点最大Pod数，以及网络规划每个节点可分配IP数三部分约束，节点可运行的pod数为三者最小值，计算公式：Min[节点CPU核心数x每个核心可运行的POD数，每个节点最大Pod数，网络规划允许的最大Pod数]

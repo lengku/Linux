@@ -1,0 +1,94 @@
+pipeline本身配置
+
+#设置清除构建记录数量,设置pipeline构建数量信息
+opentions{
+	buildDiscarder(logRotator(numToKeepStr: '10'))
+}
+
+#设置代码仓库拉取到本地信息
+
+
+
+
+
+
+
+pipeline {
+    agent any
+    parameters {
+        choice(name: 'CHOICES', choices: 'dev\ntest\nprod', description: '请选择部署环境')
+    }
+    environment {
+        registry = "harbor.tontron.com.cn"
+        credentialsId = '0958be63-0f38-49b3-87e6-f22752792565'
+        project = 'nas'
+        appname = 'nas-cloud'
+
+    }
+    stages{
+
+    	stage("deploay test") {
+            when {
+                expression { return params.CHOICES == 'test'}    
+            }
+            steps {
+
+            	//拉取代码
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '625e0146-e32d-495c-8844-c31d12a4af78', url: 'ssh://vcs-user@phabricator.tontron.com.cn:3333/diffusion/79/nas-cloud.git']]])
+
+                //编译代码
+                sh "chmod 755 ${env.WORKSPACE}/build.sh &&  ${env.WORKSPACE}/build.sh package"
+
+                //质量检测
+                script {
+                      scannerHome = tool 'sonarScanner'
+                 }
+                  withSonarQubeEnv("SonarServer") {
+                      sh "${scannerHome}/bin/sonar-scanner"
+                  }
+
+                //代码覆盖
+                jacoco()
+
+                //部署
+                sh " ${env.WORKSPACE}/build.sh deploy"
+            }
+        }
+
+        
+        stage("deploay prod") {
+            when {
+                expression { return params.CHOICES == 'prod'}    
+            }
+            steps {
+                //拉取代码
+                checkout([$class: 'GitSCM', branches: [[name: '*/prod']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '625e0146-e32d-495c-8844-c31d12a4af78', url: 'ssh://vcs-user@phabricator.tontron.com.cn:3333/diffusion/79/nas-cloud.git']]])
+
+                //编译代码
+                sh "chmod 755 ${env.WORKSPACE}/build.sh &&  ${env.WORKSPACE}/build.sh package"
+                //质量检测
+                script {
+                      scannerHome = tool 'sonarScanner'
+                 }
+                  withSonarQubeEnv("SonarServer") {
+                      sh "${scannerHome}/bin/sonar-scanner"
+                  }
+
+
+                //上传镜像
+                withDockerRegistry(credentialsId: "$credentialsId", url: "https://$registry") {
+                    sh '''
+                        Time=`date +%F`
+                        docker build -f Dockerfile -t $registry/$project/"$appname"-prod:$Time .
+                        docker push $registry/$project/"$appname"-prod:$Time
+                        docker rmi $registry/$project/"$appname"-prod:$Time
+                    '''
+                }
+                sh "ssh root@47.103.73.161 /bin/sh /opt/deploy.sh down"
+                sh "ssh root@47.103.73.161 /bin/sh /opt/deploy.sh up"
+
+            }
+        }
+    }
+
+}

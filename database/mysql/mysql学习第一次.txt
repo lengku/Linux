@@ -13,3 +13,28 @@ mysql学习第一次
 	sys_filds:索引中定义的索引列
 3.mysql升级
 	mysql_update -s  只升级mysql系统库
+
+4.mysql 安装
+yum -y install libaio-devel
+groupadd mysql
+useradd -r -g mysql -s /bin/false mysql
+mkdir /work && cd /work
+mkdir soft data
+chown mysql:mysql /work/soft /work/data
+ln -s mysql-8.0.19-linux-glibc2.12-x86_64 mysql
+cd mysql
+bin/mysqld --initialize --user=mysql --datadir=/work/data
+echo "export PATH=$PATH:/work/soft/mysql/bin" >>/etc/profile
+. /etc/profile
+sed -i 's@datadir=/var/lib/mysql@datadir=/work/data@g' /etc/my.cnf
+sed -i 's@socket=/var/lib/mysql/mysql.sock@socket=/tmp/mysql.sock@g' /etc/my.cnf
+cp support-files/mysql.server /etc/init.d/mysqld
+sed -i '46s@basedir=@basedir=/work/soft/mysql@g' /etc/init.d/mysqld
+sed -i '47s@datadir=@datadir=/work/data@g' /etc/init.d/mysqld
+chkconfig --add mysqld
+
+
+mkdir /var/log/mariadb/
+touch  /var/log/mariadb/mariadb.log
+chown -R mysql:mysql /var/log/mariadb/
+service mysqld restart
