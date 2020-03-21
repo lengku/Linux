@@ -1,0 +1,59 @@
+pipeline {
+    agent any
+    parameters {
+        choice(name: 'CHOICES', choices: 'test\nprod', description: '请选择部署环境')
+        }
+    environment {
+        registry = "harbor.tontron.com.cn"
+        credentialsId = '0958be63-0f38-49b3-87e6-f22752792565'
+        project = '项目名称'
+        appname = '应用名称'
+        GitCode = '代码仓库地址'
+
+        }
+    stages{
+        stage('获取分支代码') {
+            steps {
+                sh 'echo "获取代码分支： $CHOICES"'
+                checkout([$class: 'GitSCM', branches: [[name: "*/$CHOICES"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: "$credentialsId", url: "$GitCode"]]])
+            }
+        }
+
+        stage('编译代码') {
+            steps{
+                sh ' source /etc/profile && rm -rf dist && yarn && npm run build && chmod -R 755 dist'
+            }
+        }
+
+        stage('环境部署prod') {
+            when {
+                expression { return params.CHOICES == 'prod'}
+            }
+            steps {
+                withDockerRegistry(credentialsId: "$credentialsId", url: "https://$registry") {
+                    sh '''
+                        Time=`date +%F`
+                        docker build -f Dockerfile -t $registry/$project/"$appname"-prod:$Time .
+                        docker push $registry/$project/"$appname"-prod:$Time
+                        docker rmi $registry/$project/"$appname"-prod:$Time
+                    '''
+                }
+                sh '''
+                ssh root@IP export tag=`date +%F`
+                ssh root@IP  docker-compose config -f /opt/owncloud/app/nas_cloud_app.yml  >>/opt/owncloud/app/$tag.yml
+
+                ssh root@IP  docker-compose -f /opt/owncloud/app/$tag.yml up -d
+
+                '''
+            }
+        }
+        stage('环境部署test') {
+            when {
+                expression { return params.CHOICES == 'test'}
+            }
+            steps {
+                    sh " chmod -R 755 ${env.WORKSPACE}/build.sh && ${env.WORKSPACE}/build.sh deploy"
+            }
+        }
+    }
+}
